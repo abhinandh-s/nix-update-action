@@ -22,13 +22,15 @@ async fn main() -> anyhow::Result<()> {
     let _did_change = 0;
     let args = Args::parse();
 
-    println!("Updating sources for {}/{}...", args.owner, args.repo);
+    // This creates a collapsible section in GitHub Actions logs
+    println!("::group::Updating sources for {}/{}", args.owner, args.repo);
 
     // Now use args.owner and args.repo in your existing logic
     let release = fetch_latest_release(&args.owner, &args.repo).await?;
-
     generate_sources_nix(&release)?;
 
+    println!("Successfully generated sources.nix");
+    println!("::endgroup::");
     Ok(())
 }
 
