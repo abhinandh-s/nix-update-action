@@ -1,0 +1,23 @@
+name: 'Nix Source Updater'
+description: 'Generates sources.nix for a Nix flake by scraping GitHub'
+author: 'Abhinandh S'
+branding:
+  icon: 'refresh-cw'
+  color: 'blue'
+
+inputs:
+  owner:
+    description: 'The GitHub owner of the repo (e.g., drager)'
+    required: true
+  repo:
+    description: 'The repository name (e.g., wasm-pack)'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - --owner
+    - ${{ inputs.owner }}
+    - --repo
+    - ${{ inputs.repo }}
