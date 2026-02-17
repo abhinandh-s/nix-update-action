@@ -27,4 +27,4 @@ runs:
 
     - name: Execute
       shell: bash
-      run: ./nix-updater --owner "${{ inputs.owner }}" --repo "${{ inputs.repo }}"
+      run: ./nix-updater --repositories "${{ inputs.repositories }}"
