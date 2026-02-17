@@ -1,23 +1,30 @@
 name: 'Nix Source Updater'
-description: 'Generates sources.nix for a Nix flake by scraping GitHub'
-author: 'Abhinandh S'
-branding:
-  icon: 'refresh-cw'
-  color: 'blue'
-
+description: 'Generates sources.nix for a Nix flake'
 inputs:
   owner:
-    description: 'The GitHub owner of the repo (e.g., drager)'
+    description: 'GitHub owner'
     required: true
   repo:
-    description: 'The repository name (e.g., wasm-pack)'
+    description: 'Repository name'
     required: true
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - --owner
-    - ${{ inputs.owner }}
-    - --repo
-    - ${{ inputs.repo }}
+  using: 'composite'
+  steps:
+    - name: Install binary
+      shell: bash
+      run: |
+        # Determine OS (Linux or macOS)
+        OS="linux"
+        [[ "$RUNNER_OS" == "macOS" ]] && OS="darwin"
+        
+        # Download the specific binary from your releases
+        # Note: You'll need to name your release assets accordingly
+        URL="https://github.com/abhinandh-s/nix-update-action/releases/latest/download/nix-update-action-$OS-amd64"
+        
+        curl -sL "$URL" -o nix-updater
+        chmod +x nix-updater
+
+    - name: Execute
+      shell: bash
+      run: ./nix-updater --owner "${{ inputs.owner }}" --repo "${{ inputs.repo }}"
