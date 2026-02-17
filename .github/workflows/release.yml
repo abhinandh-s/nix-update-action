@@ -31,9 +31,10 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
         
+      - name: Rename binary
+        run: mv target/${{ matrix.target }}/release/nix-update-action nix-update-action-${{ matrix.suffix }}
+
       - name: Upload Artifact
         uses: softprops/action-gh-release@v1
         with:
-          files: target/${{ matrix.target }}/release/nix-update-action
-          # Rename the file on the fly to match our curl command
-          name: nix-update-action-${{ matrix.suffix }}
+          files: nix-update-action-${{ matrix.suffix }}
