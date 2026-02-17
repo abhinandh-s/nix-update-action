@@ -21,7 +21,7 @@ jobs:
 
       - name: Run Nix Source Updater
         # Points to your Action repo and the version tag
-        uses: abhinandh-s/nix-update-action@master #v1.0.0 
+        uses: abhinandh-s/nix-update-action@master # or v1.0.0 
         with:
           owner: 'drager'
           repo: 'wasm-pack'
@@ -42,6 +42,7 @@ jobs:
 ### Generated sources.nix
 
 ```nix
+# This file was automatically generated. Do not edit manually.
 {
   version = "v0.14.0";
   assets = {
@@ -62,7 +63,6 @@ jobs:
       hash = "sha256:278a8d668085821f4d1a637bd864f1713f872b0ae3a118c77562a308c0abfe8d";
     };
   };
-  licenseKeys = [ "asl20" "mit" ];
 }
 ```
 
