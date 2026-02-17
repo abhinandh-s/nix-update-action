@@ -8,29 +8,34 @@ use std::io::Write;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// GitHub owner of the repository
-    #[arg(short, long)]
-    owner: String,
-
-    /// Name of the repository
-    #[arg(short, long)]
-    repo: String,
+    /// Repositories in "owner/repo" format
+    #[arg(short, long, value_delimiter = '\n', num_args = 1..)]
+    repositories: Vec<String>,
 }
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let _did_change = 0;
     let args = Args::parse();
 
-    // This creates a collapsible section in GitHub Actions logs
-    println!("::group::Updating sources for {}/{}", args.owner, args.repo);
+    for repo_str in args.repositories {
+        // Split "owner/repo"
+        let parts: Vec<&str> = repo_str.split('/').collect();
+        if parts.len() != 2 {
+            eprintln!("Skipping invalid repo format: {}", repo_str);
+            continue;
+        }
 
-    // Now use args.owner and args.repo in your existing logic
-    let release = fetch_latest_release(&args.owner, &args.repo).await?;
-    generate_sources_nix(&release)?;
+        let owner = parts[0];
+        let repo = parts[1];
 
-    println!("Successfully generated sources.nix");
-    println!("::endgroup::");
+        println!("Processing {}/{}...", owner, repo);
+
+        // Call your existing update logic here
+        if let Err(e) = run_update(owner, repo).await {
+            eprintln!("Failed to update {}/{}: {}", owner, repo, e);
+        }
+    }
+
     Ok(())
 }
 
@@ -67,7 +72,10 @@ pub struct ReleaseAsset {
 
 fn generate_sources_nix(release: &ReleaseResponse) -> anyhow::Result<()> {
     let mut file = File::create("sources.nix")?;
-    writeln!(file, "# This file was automatically generated. Do not edit manually.")?;
+    writeln!(
+        file,
+        "# This file was automatically generated. Do not edit manually."
+    )?;
     writeln!(file, "{{")?;
     writeln!(file, "  version = {:?};", release.tag_name)?;
     writeln!(file, "  assets = {{")?;

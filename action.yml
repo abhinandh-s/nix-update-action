@@ -1,12 +1,12 @@
 name: 'Nix Source Updater'
 description: 'Generates sources.nix for a Nix flake'
 inputs:
-  owner:
-    description: 'GitHub owner'
+  repositories:
+    description: 'List of repositories in owner/repo format, one per line'
     required: true
-  repo:
-    description: 'Repository name'
-    required: true
+  token:
+    description: 'GitHub Token'
+    default: ${{ github.token }}
 
 runs:
   using: 'composite'
