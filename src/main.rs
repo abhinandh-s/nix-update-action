@@ -67,7 +67,7 @@ pub struct ReleaseAsset {
 
 fn generate_sources_nix(release: &ReleaseResponse) -> anyhow::Result<()> {
     let mut file = File::create("sources.nix")?;
-
+    writeln!(file, "# This file was automatically generated. Do not edit manually.")?;
     writeln!(file, "{{")?;
     writeln!(file, "  version = {:?};", release.tag_name)?;
     writeln!(file, "  assets = {{")?;
