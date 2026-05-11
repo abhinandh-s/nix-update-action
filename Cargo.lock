@@ -738,7 +738,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "nix-update-action"
+name = "nu"
 version = "0.1.0"
 dependencies = [
  "anyhow",
